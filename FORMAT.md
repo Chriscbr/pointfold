@@ -86,7 +86,7 @@ Without JavaScript, tables and images still appear when expanded, and diagram bl
 
 The top-right theme button switches light/dark mode; the reader initially follows the system preference and remembers an explicit choice in browser storage where available.
 Download page saves the complete HTML reader.
-Download everything saves the original Markdown file; Copy everything copies the complete Markdown, including child points, IDs, and visual block source.
+Download markdown saves the original Markdown file; Copy everything copies the complete Markdown, including child points, IDs, and visual block source.
 Print expands all points and prepares diagrams and images before opening the print dialog, with controls hidden and light colors on paper.
 The original expansion state is restored afterward.
 

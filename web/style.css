@@ -3,7 +3,7 @@
 :root[data-theme="light"] { color-scheme:light; }
 :root[data-theme="dark"] { color-scheme:dark; }
 body { background:Canvas; color:CanvasText; }
-#theme-toggle { float:right; }
+.page-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:4px; }
 h1 { font-size:1.25em; margin:.5em 0; }
 .controls { margin:.5em 0; }
 .points { list-style:none; margin:0; padding:0; }
@@ -32,7 +32,7 @@ summary { cursor:pointer; }
 @media print {
   :root { color-scheme:light !important; }
   body { background:white; color:black; }
-  .controls, #theme-toggle, .copy-markdown, .copy-point svg, .image-size, dialog { display:none !important; }
+  .controls, .page-actions, .copy-markdown, .copy-point svg, .image-size, dialog { display:none !important; }
   .copy-point { color:inherit; }
   .point.highlight > details > summary, .point.highlight > .leaf-row { outline:none; }
   .point-content, .image-frame { overflow:visible; }
