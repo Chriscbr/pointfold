@@ -1,0 +1,5 @@
+module github.com/Chriscbr/pointfold
+
+go 1.22
+
+require github.com/yuin/goldmark v1.8.7

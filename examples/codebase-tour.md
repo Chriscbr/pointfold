@@ -1,0 +1,43 @@
+# How does Pointfold turn Markdown into a reader?
+
+- Pointfold separates source structure, rendering, and browser interactions.
+  - `outline.go` parses and validates a tree of points.
+  - `render.go` turns that tree into HTML with embedded assets.
+  - `web/reader.js` handles copying, navigation, and global expansion controls.
+- The CLI validates input before replacing an output file. {#pipeline}
+  - `run` reads a path or standard input.
+  - `parseOutline` produces the [point model](#model) or an error.
+  - `renderOutline` builds the entire HTML result in memory.
+  - `atomicWrite` writes a temporary file before renaming it over the destination.
+    - This sequence prevents a parsing failure from truncating an existing output.
+    - A path check also prevents overwriting the input through the same path or a filesystem alias.
+- Every point has one text field and a list of child points. {#model}
+  - `Text` holds the point's Markdown.
+  - `StableID` holds optional source identity.
+  - `Number` holds a position such as `2.1.3` in this document version.
+  - `Line` points back to the source file for diagnostics and the `refs` command.
+  - `Children` holds points with the same structure.
+  - `Markdown` retains the point's own source text and visual blocks for copying without its children.
+  - `Content` holds visual blocks that appear when the point is expanded.
+- Parsing builds the tree before checking its cross-references. {#resolution}
+  - Goldmark parses the Markdown into a syntax tree.
+  - `parseList` collects points and rejects unsupported block structures.
+  - A trailing `{#stable-id}` is removed from point text and registered in `ByID`.
+  - A second pass rejects fragment links whose targets were never registered.
+    - Waiting until the second pass permits a point to refer to a later point.
+    - Duplicate stable IDs fail before link resolution can become ambiguous.
+- Rendering keeps stable identity separate from visible position. {#rendering}
+  - `linkRenderer` resolves a source link through `ByID`.
+  - The generated link points to the target's current numbered HTML anchor.
+  - Its label gains the target's current outline number.
+  - A copy button exposes that outline number without exposing the source ID.
+- Browser navigation reveals a target by opening only its ancestors. {#navigation}
+  - The click handler records the source point for the return button.
+  - `reveal` walks from the target toward the document root.
+    - Every ancestor `details` element is opened.
+    - The target's own children retain their previous expansion state.
+  - The target is highlighted and receives focus.
+- A moved point retains its source identity when its stable ID is preserved.
+  - Re-rendering updates links to its new number through [reference resolution](#resolution).
+  - A previously copied outline number still belongs to the older document version.
+  - An agent should inspect the current source or the `refs` output before acting on a reference from another version.

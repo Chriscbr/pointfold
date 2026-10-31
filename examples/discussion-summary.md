@@ -1,0 +1,31 @@
+# Why did this fictional developer discussion split over a rewrite?
+
+- This example summarizes invented comments in the style of a developer forum.
+  - It does not describe an actual Hacker News thread.
+  - The comments below are paraphrases of the fictional positions rather than quotations.
+- One group treats a rewrite as a way to recover development speed. {#speed}
+  - Comment A argues that new engineers cannot safely change the existing system.
+  - Comment B attributes the difficulty to the implementation language.
+    - B supplies no example separating language difficulty from domain complexity.
+  - Comment C expects a familiar stack to make hiring easier.
+- Another group treats the existing behavior as an asset that would be expensive to reproduce. {#behavior}
+  - Comment D describes a past rewrite that missed undocumented client behavior.
+  - Comment E argues that apparent implementation messiness can encode operational lessons.
+    - E does not claim that every complicated part is necessary.
+    - E asks which parts could be removed without changing behavior.
+- The apparent disagreement partly comes from different assumptions about the bottleneck. {#bottleneck}
+  - The [speed-focused group](#speed) assumes unfamiliar tools cause most delay.
+  - The [behavior-focused group](#behavior) assumes understanding existing contracts causes most delay.
+  - Both groups could support a small experiment that distinguishes those explanations.
+- A minority position proposes replacing one boundary at a time. {#incremental}
+  - Comment F suggests keeping the external API stable while replacing one implementation.
+  - Comment G objects that two stacks could increase operational work.
+  - The resulting tradeoff concerns migration granularity rather than whether change is ever desirable.
+- The thread leaves three practical questions unresolved.
+  - No participant supplies measured change lead times.
+  - No participant inventories the contracts a replacement must preserve.
+  - No participant estimates the temporary cost of operating two implementations.
+- These themes describe the sampled positions rather than their popularity.
+  - The fictional sample provides no votes or representative sampling procedure.
+  - Repetition of an anecdote would not independently verify its general conclusion.
+  - The most useful follow-up is evidence about the [actual bottleneck](#bottleneck).

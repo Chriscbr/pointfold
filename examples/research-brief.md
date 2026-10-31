@@ -1,0 +1,29 @@
+# What does one classic study tell us about retrieval practice?
+
+- This brief examines one 2006 study rather than surveying the current literature. {#scope}
+  - Claims about the experiment refer to [Roediger and Karpicke's paper](https://doi.org/10.1111/j.1467-9280.2006.01693.x).
+  - The practical suggestions below are inferences from that study.
+- **Retrieval practice** means attempting to recall material instead of simply reading it again. {#retrieval}
+  - The definition describes an activity rather than a claim that every test improves learning.
+- The study compared rereading prose with taking free-recall tests. {#design}
+  - Its two experiments included testing without feedback.
+  - Final retention tests occurred after five minutes, two days, or one week across the experiments.
+- The reported advantage depended on when retention was measured. {#finding}
+  - Rereading performed better at the five-minute delay.
+  - Prior testing performed better at the longer delays.
+  - Rereading also increased participants' confidence more than testing did.
+- The results separate immediate performance from delayed retention. {#interpretation}
+  - My inference is that an activity's immediate ease can be a poor guide to its later value.
+    - Feeling fluent while rereading would not establish durable recall.
+    - Struggling during recall would not establish that the attempt was wasted.
+  - This inference is narrower than a claim that difficulty always improves learning.
+- A useful next experiment would measure the kind of learning the reader actually wants. {#application}
+  - For factual material, compare later recall after equal study time.
+  - For mathematics, include new problems rather than measuring only remembered wording.
+    - Recalling a theorem's statement would not establish the ability to apply it.
+    - Applying a theorem in a familiar exercise would not establish transfer to unfamiliar problems.
+  - These proposed comparisons are extensions rather than results reported in the paper.
+- The [study's scope](#scope) limits what this brief can establish. {#limits}
+  - This brief has not assessed replications or later reviews.
+  - Prose-recall results alone do not establish effects for every subject or learner.
+  - A research synthesis would need to examine broader evidence before recommending a universal study schedule.

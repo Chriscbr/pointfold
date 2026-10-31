@@ -1,0 +1,7 @@
+node_modules/
+.qa/
+bin/
+dist/
+examples/*.html
+preview*.png
+.DS_Store

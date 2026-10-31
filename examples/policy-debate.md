@@ -1,0 +1,37 @@
+# How should a city evaluate a congestion charge?
+
+- **Overview.** This fictional policy debate concerns charging vehicles to enter a busy district.
+  - The example assumes no particular city, law, fee, or measured effect.
+  - Every predicted consequence below is a hypothesis to evaluate rather than a reported result.
+- **Definitions**
+  - **Congestion** means delay imposed by traffic demand relative to available road capacity. {#congestion}
+  - **Incidence** means who ultimately bears a policy's costs. {#incidence}
+  - **Access** means the ability to reach a destination using the transport options actually available. {#access}
+- **Case for.** The strongest case for the charge is that it could reduce avoidable peak-hour driving. {#case-for}
+  - A price could make some travelers switch time, route, mode, or destination.
+  - Fewer vehicles could reduce [congestion](#congestion) for remaining road users.
+  - A successful design would need to distinguish a genuine reduction from traffic displaced to nearby streets.
+    - Measurements inside the zone alone would miss displaced congestion.
+    - Measurements at several boundaries could help identify displacement.
+- **Case against.** The strongest objection concerns travelers who cannot easily change their trips. {#case-against}
+  - Some workers might lack a practical public-transport alternative.
+    - An available bus route might not run during a worker's shift.
+    - A nominal connection might require an unreliable transfer.
+  - A uniform fee could impose unequal burdens even when everyone faces the same price.
+    - The fee's share of disposable income is one relevant measure of [incidence](#incidence).
+    - A caregiver's schedule constraints could matter even when income is not low.
+- **Tradeoffs.** The benefits and burdens can both occur, so neither claim alone settles the policy. {#tradeoff}
+  - Reduced delay would not by itself establish fair [access](#access).
+  - Unequal burdens would not by themselves establish that every possible charge is worse than the status quo.
+  - Exemptions, rebates, and transit investment could change the distribution of effects.
+    - Each adjustment would also change revenue or incentives.
+    - The effects of an adjusted proposal would need to be evaluated for that proposal.
+- A pilot should test the causal claims and distributional consequences separately. {#pilot}
+  - Compare traffic patterns before and during the pilot against a plausible comparison area.
+    - Record major construction and transit disruptions that could confound the comparison.
+  - Track travel time and travel cost for groups with different alternatives.
+  - Report boundary traffic alongside traffic inside the zone.
+  - Specify the conditions for changing or ending the pilot before its results are known.
+- The remaining disagreement is partly about values rather than predictions.
+  - People can agree on travel-time effects while disagreeing about an acceptable burden on constrained travelers.
+  - A transparent decision should state how it weighs that burden against the [proposed benefits](#case-for).

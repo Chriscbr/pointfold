@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Turn Markdown outlines into compact, expandable HTML, with addressable points and diagrams.">
+  <link rel="canonical" href="https://rybicki.io/pointfold/">
+  <title>Pointfold</title>
+  <style>body { max-width:76ch; margin:2em auto; padding:0 1em; } pre { overflow:auto; }</style>
+</head>
+<body>
+  <h1>Pointfold</h1>
+  <p>Write ideas as nested Markdown bullets; read them one level at a time.</p>
+  <p>Give an agent the <a href="skill/pointfold/SKILL.md">writing skill</a>, or write your own outline. Render it to a local HTML file with expandable points, copyable IDs, Markdown copy buttons, and links between points.</p>
+  <h2>Use it</h2>
+  <pre><code>go install github.com/Chriscbr/pointfold@latest
+pointfold render notes.md -o notes.html</code></pre>
+  <p>Requires Go 1.22+. Open the HTML in a browser.</p>
+  <pre><code># Should we run a pilot?
+
+- **Case for.** A pilot could test demand. {#pilot}
+  - The estimate comes from a small sample. {#sample}
+- Weigh the cost against the [uncertainty](#sample).</code></pre>
+  <p>Tables, images, and diagrams stay hidden until opened. Images start at 200px tall with a full-size toggle. Use <code>mermaid</code> fences for offline diagrams or <code>pele</code> fences for Pele via CDN.</p>
+  <h2>Examples</h2>
+  <ul>
+    <li><a href="examples/technical-decision.html">Technical decision</a> (<a href="examples/technical-decision.md">source</a>)</li>
+    <li><a href="examples/math-proof.html">Mathematical proof</a> (<a href="examples/math-proof.md">source</a>)</li>
+    <li><a href="examples/research-brief.html">Research brief</a> (<a href="examples/research-brief.md">source</a>)</li>
+    <li><a href="examples/policy-debate.html">Policy debate</a> (<a href="examples/policy-debate.md">source</a>)</li>
+    <li><a href="examples/binary-search.html">Algorithm explanation</a> (<a href="examples/binary-search.md">source</a>)</li>
+    <li><a href="examples/discussion-summary.html">Discussion summary</a> (<a href="examples/discussion-summary.md">source</a>)</li>
+    <li><a href="examples/codebase-tour.html">Codebase notes</a> (<a href="examples/codebase-tour.md">source</a>)</li>
+    <li><a href="examples/visual-blocks.html">Tables, images, and Mermaid</a> (<a href="examples/visual-blocks.md">source</a>)</li>
+    <li><a href="examples/pele-diagrams.html">Pele diagrams</a> (<a href="examples/pele-diagrams.md">source</a>)</li>
+  </ul>
+  <p><a href="https://github.com/Chriscbr/pointfold">GitHub and CLI documentation</a> · <a href="FORMAT.md">Format specification</a> · <a href="https://github.com/Chriscbr/pointfold/blob/main/LICENSE">MIT license</a></p>
+</body>
+</html>

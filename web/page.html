@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'{{if .Pele}} https://cdn.jsdelivr.net{{end}}; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>{{.Title}}</title>
+  <style>{{.CSS}}</style>
+</head>
+<body>
+  <h1>{{.Title}}</h1>
+  <p class="controls">
+    <button type="button" id="expand-all">Expand all</button>
+    <button type="button" id="collapse-all">Collapse all</button>
+    <button type="button" id="return-point" hidden>Back to previous point</button>
+  </p>
+  <main id="outline" aria-label="Expandable outline">{{.Tree}}</main>
+  <span id="status" class="sr-only" role="status" aria-live="polite"></span>
+  <dialog id="copy-dialog" aria-labelledby="copy-title">
+    <h2 id="copy-title">Copy point reference</h2>
+    <p>Automatic copying is unavailable in this browser; select and copy this reference.</p>
+    <textarea id="copy-value" rows="1" readonly aria-label="Content to copy"></textarea>
+    <form method="dialog"><button>Done</button></form>
+  </dialog>
+  {{if .Mermaid}}<script>{{.Mermaid}}</script>{{end}}
+  <script>{{.JS}}</script>
+</body>
+</html>

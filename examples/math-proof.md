@@ -1,0 +1,32 @@
+# Why is √2 irrational?
+
+- **Definitions**
+  - A **rational number** can be expressed as `a/b` for integers `a` and `b ≠ 0`. {#rational}
+  - A fraction is in **lowest terms** when its numerator and denominator share no integer factor greater than one. {#lowest-terms}
+  - An integer is **even** when it equals `2k` for some integer `k`. {#even}
+- If an integer's square is even, the integer itself is even. {#parity-lemma}
+  - We prove this by showing that an odd integer has an odd square.
+    - An odd integer has the form `2k + 1` for some integer `k`.
+    - Squaring gives `(2k + 1)² = 4k² + 4k + 1`.
+    - Factoring gives `4k² + 4k + 1 = 2(2k² + 2k) + 1`.
+    - This expression is odd because it is one more than an even integer.
+  - Every integer is either even or odd.
+  - Therefore an integer with an even square cannot be odd.
+- Suppose for contradiction that √2 is [rational](#rational). {#assumption}
+  - Choose positive integers `a` and `b` such that `√2 = a/b` in [lowest terms](#lowest-terms). {#fraction}
+    - Any common factors can be canceled without changing the value of a fraction.
+    - Canceling common factors eventually yields lowest terms because the positive denominator decreases.
+- Squaring the chosen equality gives `a² = 2b²`. {#equation}
+  - The equation makes `a²` [even](#even).
+  - The [parity lemma](#parity-lemma) makes `a` even.
+  - Therefore `a = 2k` for some integer `k`.
+- Substituting `a = 2k` into the [equation](#equation) gives `b² = 2k²`. {#both-even}
+  - Substitution first gives `4k² = 2b²`.
+  - Dividing both sides by two gives `2k² = b²`.
+  - The resulting equation makes `b²` even.
+  - The [parity lemma](#parity-lemma) makes `b` even.
+- Both `a` and `b` are divisible by two. {#contradiction}
+  - Their shared factor contradicts the [choice of a fraction in lowest terms](#fraction).
+  - Therefore the [rationality assumption](#assumption) is false.
+- Consequently, √2 is irrational.
+  - The contradiction rules out every integer fraction representing √2 rather than only one attempted fraction.

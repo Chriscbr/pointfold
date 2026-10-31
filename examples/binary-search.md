@@ -1,0 +1,36 @@
+# How does lower-bound binary search work?
+
+- The algorithm returns the first index whose value is at least `target`. {#contract}
+  - The input array `a` must be sorted in nondecreasing order.
+  - If no value qualifies, the result is `len(a)`.
+  - Repeated values are allowed.
+- The search maintains a half-open interval `[lo, hi)`. {#interval}
+  - Every index before `lo` contains a value smaller than `target`.
+  - Every index at or after `hi` contains a value at least `target`.
+  - Either region may initially be empty.
+- Initialize `lo = 0` and `hi = len(a)`.
+  - The [invariant](#interval) holds because both excluded regions are empty.
+- While `lo < hi`, inspect `mid = lo + (hi - lo) / 2` using integer division. {#loop}
+  - The index `mid` lies inside the current interval.
+  - If `a[mid] < target`, set `lo = mid + 1`. {#move-lo}
+    - Sorted order implies every index through `mid` is too small.
+      - For any index `j ≤ mid`, sorted order gives `a[j] ≤ a[mid]`.
+      - Combining that inequality with `a[mid] < target` gives `a[j] < target`.
+    - Excluding those indices preserves the [invariant](#interval).
+  - Otherwise, set `hi = mid`. {#move-hi}
+    - Sorted order implies every index from `mid` onward qualifies.
+    - Keeping `mid` as the boundary preserves the possibility that it is the first qualifying index.
+    - Setting `hi = mid - 1` would use the wrong interval convention.
+- The loop terminates because each iteration strictly reduces `hi - lo`. {#termination}
+  - The [lower-bound update](#move-lo) raises `lo` by at least one.
+  - The [upper-bound update](#move-hi) lowers `hi` by at least one.
+  - The interval length remains a nonnegative integer.
+- Return `lo` when `lo == hi`. {#result}
+  - The invariant says that all earlier indices are too small.
+  - The invariant says that this index qualifies whenever it is inside the array.
+  - Together these statements establish the [contract](#contract).
+- Searching for `4` in `[1, 4, 4, 9]` returns `1`.
+  - Starting at `[0, 4)` inspects index `2` and moves `hi` to `2`.
+  - Searching `[0, 2)` inspects index `1` and moves `hi` to `1`.
+  - Searching `[0, 1)` inspects index `0` and moves `lo` to `1`.
+  - The [termination condition](#termination) now holds.

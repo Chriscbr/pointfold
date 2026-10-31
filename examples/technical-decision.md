@@ -1,0 +1,40 @@
+# Should Larch move from Rust to Go?
+
+- This fictional decision assumes a Rust API service whose main problem is slow delivery. {#scenario}
+  - The team attributes most delay to unfamiliarity with the current code rather than measured compiler limitations.
+  - The service meets its current latency and memory budgets.
+  - Two engineers know the service deeply, while six engineers have mostly Go experience.
+  - These assumptions are invented for this example rather than observations about a real application.
+- The largest possible benefit is broader ownership of routine changes. {#ownership}
+  - Under the [team assumptions](#scenario), more engineers could review changes in a familiar language.
+    - Familiar syntax would remove one source of friction.
+    - Familiarity would not supply knowledge of the service's business rules.
+      - Those rules include retry behavior, error classification, and client compatibility.
+  - This benefit depends on language unfamiliarity being a major cause of the delivery delay. {#causal-assumption}
+    - A month of change data could separate time spent on language issues from time spent understanding requirements.
+    - If most delay comes from unclear requirements, a rewrite would leave the main bottleneck intact.
+- The largest likely cost is reproducing behavior that the current implementation already gets right. {#rewrite-cost}
+  - A replacement would need to match undocumented client expectations.
+    - Matching the public schema would not guarantee matching retry behavior.
+      - A client might treat a particular timeout as safe to retry.
+        - Changing that timeout to a generic error could change the client's behavior.
+  - Engineers working on parity would have less time for requested features.
+  - Maintaining both implementations during migration would create additional work.
+- Performance is a constraint to measure rather than a benefit to assume. {#performance}
+  - This scenario supplies no benchmark that predicts the replacement's latency or memory use.
+  - A representative prototype could expose differences under realistic workloads.
+    - Tail latency should be evaluated alongside throughput.
+    - Memory use should be evaluated at the same concurrency level.
+    - An acceptable result would depend on the service's actual operating budget.
+- A narrow experiment is justified before a whole-service rewrite. {#recommendation}
+  - Implement one representative endpoint in Go without changing the external contract.
+  - Compare delivery effort against similar changes in the existing service.
+    - Include review and debugging time in the comparison.
+    - Count learning the business rules as work in either implementation.
+  - Test behavioral parity against captured cases before interpreting the [performance results](#performance).
+  - Proceed only if the ownership gain outweighs the [cost of reproducing behavior](#rewrite-cost).
+- The recommendation should change if the experiment weakens its central assumptions. {#reversal}
+  - A small language-related delay would weaken the case for the [ownership benefit](#ownership).
+  - Frequent parity failures would increase the expected migration cost.
+  - A hard resource-budget failure would rule out the tested implementation even if it were faster to develop.
+  - A successful endpoint would justify another bounded trial rather than prove that every subsystem should move.

@@ -1,0 +1,25 @@
+/* Keep native typography, links, disclosure markers, and focus indicators. */
+h1 { font-size:1.25em; margin:.5em 0; }
+.controls { margin:.5em 0; }
+.points { list-style:none; margin:0; padding:0; }
+.points .points { padding-left:1.25em; }
+summary, .leaf-row { padding:1px 0; overflow-wrap:anywhere; }
+summary { cursor:pointer; }
+.leaf-row { padding-left:1em; }
+.copy-point, .copy-markdown { font:inherit; font-size:.75em; color:GrayText; background:none; border:0; padding:0; margin-right:.4em; white-space:nowrap; cursor:pointer; }
+.copy-markdown { float:right; margin:0 0 0 .5em; }
+.copy-point svg, .copy-markdown svg { width:.85em; height:.85em; fill:none; stroke:currentColor; stroke-width:1.2; vertical-align:middle; }
+.copied { color:LinkText; }
+.ref-number { font-size:.75em; white-space:nowrap; }
+.point.highlight > details > summary, .point.highlight > .leaf-row { outline:1px dotted; }
+.point-content { margin:.25em 0 .25em 1em; overflow-x:auto; }
+.point-content p { margin:.25em 0; }
+.point-content table { border-collapse:collapse; }
+.point-content th, .point-content td { border:1px solid GrayText; padding:2px 5px; }
+.image-block, .image-frame { display:block; }
+.image-frame { overflow:auto; }
+.image-frame img { display:block; max-height:200px; max-width:100%; height:auto; }
+.full-size img { max-height:none; max-width:none; }
+.diagram svg { max-width:100%; height:auto; }
+#copy-value { box-sizing:border-box; max-width:100%; }
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
