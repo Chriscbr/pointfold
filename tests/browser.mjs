@@ -261,6 +261,8 @@ assert.deepEqual(await page.locator('details').evaluateAll(nodes=>nodes.map(node
 await page.emulateMedia({media:'print'});
 assert.equal(await page.locator('#theme-toggle').isVisible(),false);
 assert.equal(await page.locator('.controls').isVisible(),false);
+assert(await page.locator('#p-1 > details > summary .point-number').isVisible());
+assert.equal(await page.locator('#p-1 > details > summary .copy-point svg').isVisible(),false);
 assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(255, 255, 255)');
 assert.equal(await page.locator('.diagram svg text').first().evaluate(node=>getComputedStyle(node).fill),'rgb(0, 0, 0)');
 await page.emulateMedia({media:'screen'});

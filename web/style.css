@@ -32,7 +32,8 @@ summary { cursor:pointer; }
 @media print {
   :root { color-scheme:light !important; }
   body { background:white; color:black; }
-  .controls, #theme-toggle, .copy-point, .copy-markdown, .image-size, dialog { display:none !important; }
+  .controls, #theme-toggle, .copy-markdown, .copy-point svg, .image-size, dialog { display:none !important; }
+  .copy-point { color:inherit; }
   .point.highlight > details > summary, .point.highlight > .leaf-row { outline:none; }
   .point-content, .image-frame { overflow:visible; }
   .image-frame img { max-width:100%; max-height:200px; }
