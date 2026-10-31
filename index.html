@@ -10,9 +10,9 @@
 </head>
 <body>
   <h1>Pointfold</h1>
-  <p>Write ideas as nested Markdown bullets; read them one level at a time.</p>
-  <p>Give an agent the <a href="skill/pointfold/SKILL.md">writing skill</a>, or write your own outline. Render it to a local HTML file with expandable points, copyable IDs, Markdown copy buttons, and links between points.</p>
-  <h2>Use it</h2>
+  <p>A CLI tool and agent skill for to make it easier to view structured arguments, algorithms, explanations and more in a human-friendly way.</p>
+  <p>By using the <a href="skill/pointfold/SKILL.md">pointfold writing skill</a>, an agent is steered to avoid paragraph-slop, and instead to structure its textual explanations and descriptions in a hierarchical fashion that makes it easier for you to review. Agents produce a bulleted outline that can be viewed as an HTML file that where each bullet point only expands when you click on it. This facilitates reading the content breadth-first instead of depth-first.</p>
+  <h2>Usage</h2>
   <pre><code>go install github.com/Chriscbr/pointfold@latest
 pointfold render notes.md -o notes.html</code></pre>
   <p>Requires Go 1.22+. Open the HTML in a browser.</p>
@@ -21,7 +21,7 @@ pointfold render notes.md -o notes.html</code></pre>
 - **Case for.** A pilot could test demand. {#pilot}
   - The estimate comes from a small sample. {#sample}
 - Weigh the cost against the [uncertainty](#sample).</code></pre>
-  <p>Tables, images, and diagrams stay hidden until opened. Images start at 200px tall with a full-size toggle. Use <code>mermaid</code> fences for offline diagrams or <code>pele</code> fences for Pele via CDN.</p>
+  <p>Documents can include tables, images, and diagrams written using <a href="https://mermaid.ai/open-source/">Mermaid</a> (rendered with <a href="https://pele.run/">Pele</a>).</p>
   <h2>Examples</h2>
   <ul>
     <li><a href="examples/technical-decision.html">Technical decision</a> (<a href="examples/technical-decision.md">source</a>)</li>
