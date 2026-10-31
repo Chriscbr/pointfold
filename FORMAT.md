@@ -1,4 +1,4 @@
-# Pointfold Markdown profile, version 0.4
+# Pointfold Markdown profile, version 0.5
 
 ## Model and meaning
 
@@ -81,6 +81,14 @@ Diagrams use standard Mermaid syntax in `mermaid` fences, rendered by [Pele](htt
 Pele 1.13.0 loads from jsDelivr with a pinned version and integrity hash; the CDN load needs an internet connection.
 Without JavaScript, tables and images still appear when expanded, and diagram blocks show their source text.
 `check` validates placement and references, while diagram syntax errors appear when the point is opened.
+
+## Reader controls
+
+The top-right theme button switches light/dark mode; the reader initially follows the system preference and remembers an explicit choice in browser storage where available.
+Download page saves the complete HTML reader.
+Download everything saves the original Markdown file; Copy everything copies the complete Markdown, including child points, IDs, and visual block source.
+Print expands all points and prepares diagrams and images before opening the print dialog, with controls hidden and light colors on paper.
+The original expansion state is restored afterward.
 
 ## Inline text
 

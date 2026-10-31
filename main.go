@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-const version = "0.4.0"
+const version = "0.5.0"
 
 const usage = `Pointfold — read ideas a point at a time.
 
@@ -82,6 +82,9 @@ func run(args []string, stdin io.Reader, stdout, stderr io.Writer) error {
 	outline, err := parseOutline(source)
 	if err != nil {
 		return fmt.Errorf("%s: %w", input, err)
+	}
+	if input != "-" {
+		outline.Filename = filepath.Base(input)
 	}
 	switch command {
 	case "check":

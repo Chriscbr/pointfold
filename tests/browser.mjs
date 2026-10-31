@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 import { pathToFileURL } from 'node:url';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const screenshots = process.env.POINTFOLD_SCREENSHOTS || resolve(root, '.qa');
@@ -22,6 +22,16 @@ assert.equal(await page.locator('details[open]').count(),0);
 assert.equal(await page.locator('.point:visible').count(),6);
 assert.equal(await page.title(),'Should Larch move from Rust to Go?');
 assert.equal(await page.locator('header, footer, .instructions, .stats, .eyebrow').count(),0);
+assert.equal(await page.locator('html').getAttribute('data-theme'),'light');
+const themeBounds=await page.locator('#theme-toggle').boundingBox();
+assert(themeBounds.x+themeBounds.width>1260 && themeBounds.y<20);
+await page.locator('#theme-toggle').click();
+assert.equal(await page.locator('html').getAttribute('data-theme'),'dark');
+assert.notEqual(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(255, 255, 255)');
+await page.reload();
+assert.equal(await page.locator('html').getAttribute('data-theme'),'dark');
+await page.locator('#theme-toggle').click();
+assert.equal(await page.locator('html').getAttribute('data-theme'),'light');
 const roots=await page.locator('#outline > .points > .point').evaluateAll(points=>points.map(point=>point.getBoundingClientRect().height));
 assert(roots.every(height=>height<30),'Root points should use compact, line-sized rows');
 await page.screenshot({path:screenshots+'/preview.png',fullPage:true});
@@ -149,10 +159,43 @@ assert.equal(await page.locator('#p-3 .image-size').getAttribute('aria-pressed')
 await page.locator('#p-3 .image-size').click();
 assert((await image.boundingBox()).height<=200);
 
+const pageDownloadPromise=page.waitForEvent('download');
+await page.locator('#download-page').click();
+const pageDownload=await pageDownloadPromise;
+assert.equal(pageDownload.suggestedFilename(),'visual-blocks.html');
+await pageDownload.saveAs(screenshots+'/downloaded-page.html');
+const savedHTML=await readFile(screenshots+'/downloaded-page.html','utf8');
+assert(savedHTML.startsWith('<!doctype html>'));
+assert(savedHTML.includes('data:image/svg+xml;base64,'));
+assert(!savedHTML.includes('<details open>'));
+const markdownDownloadPromise=page.waitForEvent('download');
+await page.locator('#download-all').click();
+const markdownDownload=await markdownDownloadPromise;
+assert.equal(markdownDownload.suggestedFilename(),'visual-blocks.md');
+await markdownDownload.saveAs(screenshots+'/visual-blocks.md');
+const fullSource=await readFile(root+'/examples/visual-blocks.md');
+assert.deepEqual(await readFile(screenshots+'/visual-blocks.md'),fullSource);
+await page.locator('#copy-all').click();
+assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),fullSource.toString('utf8'));
+await page.evaluate(()=>{
+  window.savedExecCommand=document.execCommand;
+  document.execCommand=()=>false;
+  Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async()=>{throw Error('denied');}}});
+});
+await page.locator('#copy-all').click();
+assert.equal(await page.locator('#copy-value').inputValue(),fullSource.toString('utf8'));
+await page.locator('#copy-dialog button').click();
+await page.evaluate(()=>{document.execCommand=window.savedExecCommand;delete navigator.clipboard;});
+
 await page.locator('#p-4 > details > summary').click({position:{x:180,y:8}});
 await page.locator('#p-4 .diagram svg').waitFor({timeout:25000});
 assert.equal(await page.locator('#p-4 .diagram').getAttribute('data-rendered'),'true');
 assert.deepEqual(remoteRequests,[peleURL]);
+if(await page.locator('html').getAttribute('data-theme')!=='dark')await page.locator('#theme-toggle').click();
+const darkFill=await page.locator('#p-4 .diagram svg text').first().evaluate(node=>getComputedStyle(node).fill);
+assert(!['rgb(0, 0, 0)','rgb(31, 31, 31)'].includes(darkFill),'Diagram labels must adapt to dark mode');
+await page.screenshot({path:screenshots+'/preview-theme-dark.png',fullPage:true});
+await page.locator('#theme-toggle').click();
 assert.equal(await page.locator('#p-5 .diagram svg').count(),0);
 await page.locator('#p-5 > details > summary').click({position:{x:180,y:8}});
 await page.locator('#p-5 .diagram svg').waitFor();
@@ -203,6 +246,25 @@ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)
 await page.screenshot({path:screenshots+'/preview-pele.png',fullPage:true});
 assert.deepEqual(errors,[]);
 
+// Print expands every branch and renders all diagrams, then restores the reader.
+await page.reload();
+await page.locator('#p-1 > details > summary').click({position:{x:180,y:8}});
+await page.locator('#p-1 .diagram svg').waitFor();
+const beforePrint=await page.locator('details').evaluateAll(nodes=>nodes.map(node=>node.open));
+await page.evaluate(()=>{window.print=()=>{window.printedState={open:[...document.querySelectorAll('details')].map(node=>node.open),diagrams:document.querySelectorAll('.diagram svg').length};};});
+await page.locator('#print-page').click();
+await page.waitForFunction(()=>window.printedState!==undefined && !document.getElementById('print-page').disabled);
+const printed=await page.evaluate(()=>window.printedState);
+assert(printed.open.every(Boolean));
+assert.equal(printed.diagrams,4);
+assert.deepEqual(await page.locator('details').evaluateAll(nodes=>nodes.map(node=>node.open)),beforePrint);
+await page.emulateMedia({media:'print'});
+assert.equal(await page.locator('#theme-toggle').isVisible(),false);
+assert.equal(await page.locator('.controls').isVisible(),false);
+assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(255, 255, 255)');
+assert.equal(await page.locator('.diagram svg text').first().evaluate(node=>getComputedStyle(node).fill),'rgb(0, 0, 0)');
+await page.emulateMedia({media:'screen'});
+
 // If the CDN is unavailable, keep the source and show a readable error.
 await page.route(peleURL,route=>route.abort());
 await page.reload();
@@ -211,12 +273,20 @@ await page.waitForFunction(()=>document.querySelector('#p-1 .diagram').dataset.r
 assert((await page.locator('#p-1 .diagram').innerText()).includes('internet connection is required'));
 assert((await page.locator('#p-1 .diagram pre').innerText()).includes('flowchart LR'));
 await context.close();
+const downloadedContext=await browser.newContext();
+const downloadedPage=await downloadedContext.newPage();
+await downloadedPage.goto(pathToFileURL(screenshots+'/downloaded-page.html').href);
+assert.equal(await downloadedPage.locator('details[open]').count(),0);
+await downloadedPage.locator('#p-3 > details > summary').click();
+await downloadedPage.locator('#p-3 img').evaluate(image=>image.decode());
+assert(await downloadedPage.locator('#p-3 img').isVisible());
+await downloadedContext.close();
 const noJS=await browser.newContext({javaScriptEnabled:false});
 const plain=await noJS.newPage();
 await plain.goto(pathToFileURL(root+'/examples/math-proof.html').href);
 await plain.locator('#p-2 > details > summary').click();
 assert.equal(await plain.locator('#p-2 > details').getAttribute('open'),'');
-console.log('PASS: nine examples; compact layout; Markdown and ID copying; highlighting; Mermaid flowchart, sequence, class, and mindmap via Pele; lazy CDN loading and failure fallback; 200px images; references; keyboard; mobile.');
+console.log('PASS: themes and persistence; complete Markdown copying and downloading; HTML downloads and reopening; print preparation and restoration; diagram themes; nine examples; point copying; highlighting; lazy CDN; images; keyboard; mobile.');
 } finally {
   await browser.close();
 }

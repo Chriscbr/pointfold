@@ -171,6 +171,7 @@ func renderOutline(w io.Writer, outline *Outline, depth int, baseDir string) err
 	}
 	css, _ := assets.ReadFile("web/style.css")
 	js, _ := assets.ReadFile("web/reader.js")
+	theme, _ := assets.ReadFile("web/theme.js")
 	t, err := template.New("page").Parse(string(page))
 	if err != nil {
 		return err
@@ -181,5 +182,7 @@ func renderOutline(w io.Writer, outline *Outline, depth int, baseDir string) err
 		CSS      template.CSS
 		JS       template.JS
 		Diagrams bool
-	}{outline.Title, template.HTML(tree.String()), template.CSS(css), template.JS(js), hasDiagrams})
+		Theme    template.JS
+		Export   struct{ Filename, Source string }
+	}{outline.Title, template.HTML(tree.String()), template.CSS(css), template.JS(js), hasDiagrams, template.JS(theme), struct{ Filename, Source string }{outline.Filename, base64.StdEncoding.EncodeToString(outline.Source)}})
 }

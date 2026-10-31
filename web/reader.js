@@ -1,13 +1,86 @@
 (() => {
   'use strict';
+  const originalPage = '<!doctype html>\n' + document.documentElement.outerHTML;
   const branches = [...document.querySelectorAll('.point > details')];
   const status = document.getElementById('status');
   const returnButton = document.getElementById('return-point');
   const previousPoints = [];
+  let renderDiagrams = async () => {};
+
+  const themeButton = document.getElementById('theme-toggle');
+  function updateThemeButton() {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'Light' : 'Dark';
+    themeButton.textContent = `${next} mode`;
+    themeButton.setAttribute('aria-label', `Switch to ${next.toLowerCase()} mode`);
+  }
+  themeButton.addEventListener('click', () => {
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = theme;
+    try { localStorage.setItem('pointfold-theme', theme); } catch {}
+    updateThemeButton();
+  });
+  updateThemeButton();
 
   function announce(message) {
     status.textContent = message;
   }
+
+  function saveFile(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+  }
+
+  function decodeBase64(value) {
+    return Uint8Array.from(atob(value), char => char.charCodeAt(0));
+  }
+
+  const exportData = JSON.parse(document.getElementById('export-data').textContent);
+  const filename = exportData.Filename.replace(/[\\/:*?"<>|\x00-\x1f]/g, '-') || 'outline.md';
+  const stem = filename.replace(/\.[^.]+$/, '') || 'outline';
+  document.getElementById('download-page').addEventListener('click', () => {
+    saveFile(new Blob([originalPage], {type:'text/html;charset=utf-8'}), `${stem}.html`);
+  });
+  const sourceBytes = decodeBase64(exportData.Source);
+  const fullMarkdown = new TextDecoder('utf-8', {ignoreBOM:true}).decode(sourceBytes);
+  document.getElementById('download-all').addEventListener('click', () => {
+    saveFile(new Blob([sourceBytes], {type:'text/markdown;charset=utf-8'}), `${stem}.md`);
+  });
+  document.getElementById('copy-all').addEventListener('click', event => {
+    void copyText(fullMarkdown, event.currentTarget, 'Copied complete Markdown');
+  });
+
+  let printState;
+  function preparePrint() {
+    if (!printState) printState = branches.map(branch => branch.open);
+    branches.forEach(branch => branch.open = true);
+  }
+  function restorePrint() {
+    if (!printState) return;
+    branches.forEach((branch, index) => branch.open = printState[index]);
+    printState = undefined;
+  }
+  window.addEventListener('beforeprint', preparePrint);
+  window.addEventListener('afterprint', restorePrint);
+  document.getElementById('print-page').addEventListener('click', async () => {
+    const button = document.getElementById('print-page');
+    button.disabled = true;
+    preparePrint();
+    try {
+      await renderDiagrams();
+      await Promise.all([...document.querySelectorAll('img')].map(image => image.decode().catch(() => {})));
+      await document.fonts.ready;
+      window.print();
+    } finally {
+      restorePrint();
+      button.disabled = false;
+    }
+  });
 
   function highlight(point) {
     if (!point) return;
@@ -28,7 +101,7 @@
     announce('Showing top-level points');
   });
 
-  async function copyReference(value, button, message) {
+  async function copyText(value, button, message) {
     const title = button.title;
     let copied = false;
     // Clipboard permissions differ for file:// documents across browsers.
@@ -58,7 +131,7 @@
       const field = document.getElementById('copy-value');
       field.value = value;
       field.rows = Math.min(12, value.split('\n').length);
-      field.cols = Math.min(70, Math.max(12, ...value.split('\n').map(line => line.length)));
+      field.cols = Math.min(70, value.split('\n').reduce((width, line) => Math.max(width, line.length), 12));
       dialog.showModal();
       field.focus();
       field.select();
@@ -74,7 +147,7 @@
       const isMarkdown = button.classList.contains('copy-markdown');
       const value = isMarkdown ? button.dataset.markdown : button.dataset.copy;
       const message = isMarkdown ? `Copied Markdown for [${point.id.slice(2)}]` : `Copied ${value}`;
-      void copyReference(value, button, message);
+      void copyText(value, button, message);
     });
     button.addEventListener('keydown', event => event.stopPropagation());
   });
@@ -143,7 +216,8 @@
       }
       return peleLoading;
     }
-    async function renderVisibleDiagrams() {
+    const rendering = new Set();
+    renderDiagrams = () => {
       for (const diagram of document.querySelectorAll('.diagram:not([data-rendered])')) {
         let hidden = false;
         for (let parent = diagram.parentElement; parent; parent = parent.parentElement) {
@@ -154,25 +228,30 @@
         if (!bounds.width || !bounds.height) continue;
         diagram.dataset.rendered = 'pending';
         const source = diagram.querySelector('pre').textContent;
-        try {
-          await loadPele();
-          const mounted = window.pele.mount(diagram, source, {links:false, images:false, zoom:false});
-          if (mounted.error) throw mounted.error;
-          diagram.dataset.rendered = 'true';
-        } catch (error) {
-          diagram.dataset.rendered = 'error';
-          const message = document.createElement('p');
-          message.textContent = `Diagram could not be rendered: ${error.message}`;
-          diagram.append(message);
-        }
+        const task = (async () => {
+          try {
+            await loadPele();
+            const mounted = window.pele.mount(diagram, source, {links:false, images:false, zoom:false});
+            if (mounted.error) throw mounted.error;
+            diagram.dataset.rendered = 'true';
+          } catch (error) {
+            diagram.dataset.rendered = 'error';
+            const message = document.createElement('p');
+            message.textContent = `Diagram could not be rendered: ${error.message}`;
+            diagram.append(message);
+          }
+        })();
+        rendering.add(task);
+        void task.finally(() => rendering.delete(task));
       }
-    }
+      return Promise.all([...rendering]);
+    };
     document.addEventListener('toggle', event => {
       if (event.target.tagName === 'DETAILS' && event.target.open) {
-        requestAnimationFrame(() => void renderVisibleDiagrams());
+        requestAnimationFrame(() => void renderDiagrams());
       }
     }, true);
-    requestAnimationFrame(() => void renderVisibleDiagrams());
+    requestAnimationFrame(() => void renderDiagrams());
   }
   window.addEventListener('hashchange', () => reveal(location.hash));
   if (location.hash) reveal(location.hash);

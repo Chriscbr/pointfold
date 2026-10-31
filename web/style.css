@@ -1,4 +1,9 @@
 /* Keep native typography, links, disclosure markers, and focus indicators. */
+:root { color-scheme:light dark; }
+:root[data-theme="light"] { color-scheme:light; }
+:root[data-theme="dark"] { color-scheme:dark; }
+body { background:Canvas; color:CanvasText; }
+#theme-toggle { float:right; }
 h1 { font-size:1.25em; margin:.5em 0; }
 .controls { margin:.5em 0; }
 .points { list-style:none; margin:0; padding:0; }
@@ -21,5 +26,16 @@ summary { cursor:pointer; }
 .image-frame img { display:block; max-height:200px; max-width:100%; height:auto; }
 .full-size img { max-height:none; max-width:none; }
 .diagram svg { max-width:100%; height:auto; }
+.diagram { --pele-bg:Canvas; --pele-fg:CanvasText; --pele-muted:GrayText; --pele-line:CanvasText; --pele-surface:ButtonFace; --pele-surface-alt:Field; --pele-border:GrayText; }
 #copy-value { box-sizing:border-box; max-width:100%; }
 .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+@media print {
+  :root { color-scheme:light !important; }
+  body { background:white; color:black; }
+  .controls, #theme-toggle, .copy-point, .copy-markdown, .image-size, dialog { display:none !important; }
+  .point.highlight > details > summary, .point.highlight > .leaf-row { outline:none; }
+  .point-content, .image-frame { overflow:visible; }
+  .image-frame img { max-width:100%; max-height:200px; }
+  summary { list-style:none; }
+  a { color:inherit; }
+}

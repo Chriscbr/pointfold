@@ -17,6 +17,8 @@ pointfold refs notes.md
 
 Open `notes.html` in a browser. `--depth 2` initially shows two levels; `--depth 0` expands everything. Stdin and stdout are supported with `-`.
 
+The reader remembers your light/dark choice. Copy everything and Download everything copy or save the complete Markdown; Download page saves the HTML. Print expands the outline, prepares diagrams, and restores your view afterward.
+
 ## Write
 
 ```markdown

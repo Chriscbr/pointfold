@@ -39,6 +39,8 @@ func markdown() goldmark.Markdown {
 
 type Outline struct {
 	Title    string
+	Source   []byte
+	Filename string
 	Points   []*Point
 	ByID     map[string]*Point
 	Flat     []*Point
@@ -52,6 +54,7 @@ func parseOutline(source []byte) (*Outline, error) {
 	if !utf8.Valid(source) {
 		return nil, fmt.Errorf("input must be UTF-8")
 	}
+	original := bytes.Clone(source)
 	source = bytes.TrimPrefix(source, []byte("\xef\xbb\xbf"))
 	source = bytes.ReplaceAll(source, []byte("\r\n"), []byte("\n"))
 	context := parser.NewContext()
@@ -59,7 +62,7 @@ func parseOutline(source []byte) (*Outline, error) {
 	if len(context.References()) > 0 {
 		return nil, fmt.Errorf("use explicit inline links; reference-definition blocks are unsupported")
 	}
-	out := &Outline{ByID: make(map[string]*Point)}
+	out := &Outline{ByID: make(map[string]*Point), Source: original, Filename: "outline.md"}
 	titleSeen := false
 	for n := root.FirstChild(); n != nil; n = n.NextSibling() {
 		switch v := n.(type) {
