@@ -13,6 +13,7 @@ try {
 const context = await browser.newContext({viewport:{width:1280,height:950},colorScheme:'light',permissions:['clipboard-read','clipboard-write']});
 const page = await context.newPage();
 const errors = [], remoteRequests = [];
+const peleURL='https://cdn.jsdelivr.net/npm/pele@1.13.0/dist/pele.global.js';
 page.on('pageerror', e => errors.push(e.message));
 page.on('request', req => {if (/^https?:/.test(req.url())) remoteRequests.push(req.url());});
 await page.goto(pathToFileURL(root+'/examples/technical-decision.html').href);
@@ -111,6 +112,8 @@ await page.goto(pathToFileURL(root+'/examples/visual-blocks.html').href);
 assert.equal(await page.locator('.copy-markdown').count(),await page.locator('.point').count());
 assert.equal(await page.locator('.diagram svg').count(),0);
 assert.equal(await page.locator('.point-content:visible').count(),0);
+assert.deepEqual(remoteRequests,[]);
+assert.equal(await page.evaluate(()=>typeof window.pele),'undefined');
 await page.locator('#p-2 > details > summary').click({position:{x:180,y:8}});
 assert(await page.locator('#p-2 table').isVisible());
 assert.equal(await page.locator('.point.highlight').count(),1);
@@ -147,8 +150,9 @@ await page.locator('#p-3 .image-size').click();
 assert((await image.boundingBox()).height<=200);
 
 await page.locator('#p-4 > details > summary').click({position:{x:180,y:8}});
-await page.locator('#p-4 .diagram svg').waitFor();
+await page.locator('#p-4 .diagram svg').waitFor({timeout:25000});
 assert.equal(await page.locator('#p-4 .diagram').getAttribute('data-rendered'),'true');
+assert.deepEqual(remoteRequests,[peleURL]);
 assert.equal(await page.locator('#p-5 .diagram svg').count(),0);
 await page.locator('#p-5 > details > summary').click({position:{x:180,y:8}});
 await page.locator('#p-5 .diagram svg').waitFor();
@@ -169,11 +173,11 @@ assert(await page.locator('#p-3 .image-frame').evaluate(node=>node.scrollWidth>n
 await page.locator('#p-3 .image-size').click();
 await page.screenshot({path:screenshots+'/preview-visuals-mobile.png',fullPage:true});
 assert.deepEqual(errors,[]);
-assert.deepEqual(remoteRequests,[]);
+assert.deepEqual(remoteRequests,[peleURL]);
 
-// Pele is a separately selected renderer and fetches its pinned CDN script only on expansion.
-const peleURL='https://cdn.jsdelivr.net/npm/pele@1.13.0/dist/pele.global.js';
-await page.goto(pathToFileURL(root+'/examples/pele-diagrams.html').href);
+// Standard Mermaid fences use the same renderer for every diagram type.
+remoteRequests.length=0;
+await page.goto(pathToFileURL(root+'/examples/diagrams.html').href);
 assert.equal(await page.locator('details[open]').count(),0);
 assert.equal(await page.locator('.diagram svg').count(),0);
 assert.equal(await page.evaluate(()=>typeof window.pele),'undefined');
@@ -188,7 +192,13 @@ await page.locator('#p-2 .diagram svg').waitFor();
 assert.equal(await page.locator('#p-2 .diagram').getAttribute('data-rendered'),'true');
 assert.deepEqual(remoteRequests,[peleURL]);
 await page.locator('#p-1 > details > summary > .copy-markdown').click();
-assert((await page.evaluate(()=>navigator.clipboard.readText())).includes('```pele\nflowchart LR'));
+assert((await page.evaluate(()=>navigator.clipboard.readText())).includes('```mermaid\nflowchart LR'));
+for(const number of [3,4]) {
+  await page.locator(`#p-${number} > details > summary`).click({position:{x:180,y:8}});
+  await page.locator(`#p-${number} .diagram svg`).waitFor();
+  assert.equal(await page.locator(`#p-${number} .diagram`).getAttribute('data-rendered'),'true');
+}
+assert.deepEqual(remoteRequests,[peleURL]);
 assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
 await page.screenshot({path:screenshots+'/preview-pele.png',fullPage:true});
 assert.deepEqual(errors,[]);
@@ -206,7 +216,7 @@ const plain=await noJS.newPage();
 await plain.goto(pathToFileURL(root+'/examples/math-proof.html').href);
 await plain.locator('#p-2 > details > summary').click();
 assert.equal(await plain.locator('#p-2 > details').getAttribute('open'),'');
-console.log('PASS: nine examples; compact layout; Markdown and ID copying; highlighting; lazy Mermaid/Pele rendering; pinned Pele CDN and failure fallback; 200px images and full-size toggle; references; keyboard; mobile; offline documents make no network requests.');
+console.log('PASS: nine examples; compact layout; Markdown and ID copying; highlighting; Mermaid flowchart, sequence, class, and mindmap via Pele; lazy CDN loading and failure fallback; 200px images; references; keyboard; mobile.');
 } finally {
   await browser.close();
 }

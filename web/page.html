@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'{{if .Pele}} https://cdn.jsdelivr.net{{end}}; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'{{if .Diagrams}} https://cdn.jsdelivr.net{{end}}; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
   <title>{{.Title}}</title>
   <style>{{.CSS}}</style>
 </head>
@@ -22,7 +22,6 @@
     <textarea id="copy-value" rows="1" readonly aria-label="Content to copy"></textarea>
     <form method="dialog"><button>Done</button></form>
   </dialog>
-  {{if .Mermaid}}<script>{{.Mermaid}}</script>{{end}}
   <script>{{.JS}}</script>
 </body>
 </html>

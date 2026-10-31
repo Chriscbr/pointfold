@@ -127,14 +127,6 @@
   });
 
   if (document.querySelector('.diagram')) {
-    window.mermaid?.initialize({
-      startOnLoad:false,
-      securityLevel:'strict',
-      theme:'neutral',
-      htmlLabels:false,
-      flowchart:{htmlLabels:false},
-      suppressErrorRendering:true
-    });
     let peleLoading;
     function loadPele() {
       if (window.pele) return Promise.resolve();
@@ -151,7 +143,6 @@
       }
       return peleLoading;
     }
-    let diagramCount = 0;
     async function renderVisibleDiagrams() {
       for (const diagram of document.querySelectorAll('.diagram:not([data-rendered])')) {
         let hidden = false;
@@ -164,14 +155,9 @@
         diagram.dataset.rendered = 'pending';
         const source = diagram.querySelector('pre').textContent;
         try {
-          if (diagram.dataset.renderer === 'pele') {
-            await loadPele();
-            const mounted = window.pele.mount(diagram, source, {links:false, images:false, zoom:false});
-            if (mounted.error) throw mounted.error;
-          } else {
-            const result = await window.mermaid.render(`diagram-${++diagramCount}`, source);
-            diagram.innerHTML = result.svg;
-          }
+          await loadPele();
+          const mounted = window.pele.mount(diagram, source, {links:false, images:false, zoom:false});
+          if (mounted.error) throw mounted.error;
           diagram.dataset.rendered = 'true';
         } catch (error) {
           diagram.dataset.rendered = 'error';

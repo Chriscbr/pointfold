@@ -1,10 +1,6 @@
 # Third-party notices
 
-The optional Mermaid runtime is built from Mermaid 12.2.0 and its bundled dependencies.
-Their license texts and package versions are included in `web/mermaid.LICENSE.txt`, and bundled JavaScript license comments are retained in `web/mermaid.min.js`.
-Mermaid's official usage documentation is at https://mermaid.js.org/config/usage.html.
-
-Pele 1.13.0 is loaded from jsDelivr only when a Pele diagram is opened.
+Pele 1.13.0 renders Mermaid syntax and is loaded from jsDelivr when a diagram is opened.
 Pele is MIT licensed; its source and license are at https://github.com/obsidianmd/pele.
 
 ## Goldmark

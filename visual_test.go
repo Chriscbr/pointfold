@@ -29,7 +29,7 @@ func TestVisualBlocksAndCopyMarkdown(t *testing.T) {
 	if err := renderOutline(&page, out, 1, "."); err != nil {
 		t.Fatal(err)
 	}
-	for _, want := range []string{"<table>", "<strong>bold</strong>", `class="diagram"`, `window.mermaid`, `data-markdown="**Comparison.** See [term](#term).`} {
+	for _, want := range []string{"<table>", "<strong>bold</strong>", `class="diagram"`, `window.pele.mount`, `data-markdown="**Comparison.** See [term](#term).`} {
 		if !strings.Contains(page.String(), want) {
 			t.Errorf("missing %s", want)
 		}
@@ -67,9 +67,6 @@ func TestImagesAreEmbeddedRelativeToInput(t *testing.T) {
 	}
 	if strings.Count(page.String(), `src="data:image/svg+xml;base64,`) != 2 {
 		t.Fatal("images were not embedded")
-	}
-	if strings.Contains(page.String(), "window.mermaid=") {
-		t.Fatal("Mermaid bundle included in a document without diagrams")
 	}
 	os.Remove(filepath.Join(dir, "assets", "test image.svg"))
 	if err := renderOutline(&bytes.Buffer{}, out, 1, dir); err == nil {

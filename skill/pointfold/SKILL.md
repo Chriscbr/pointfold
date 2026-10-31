@@ -45,12 +45,12 @@ Use one H1 title followed by nested unordered Markdown bullets.
 Prefer two spaces per nesting level and one physical line per point; ordinary soft wrapping is also accepted.
 Use inline Markdown for emphasis, code, and explicit links.
 Do not use additional headings, standalone prose paragraphs, task boxes, raw HTML, or ordinary code blocks in the outline.
-For a visual point, put a Markdown table, an image-only paragraph, or a fenced `mermaid` or `pele` block under its text, separated by a blank line and indented to belong to that bullet.
+For a visual point, put a Markdown table, an image-only paragraph, or a fenced `mermaid` block under its text, separated by a blank line and indented to belong to that bullet.
 These blocks appear only when that point is expanded; they are not additional numbered child points or separate prose fields.
 Use local image paths relative to the Markdown file so the CLI can embed them in the standalone HTML.
 An image-only bullet is also supported, with descriptive alt text supplying the collapsed label.
 Images start at a maximum height of 200 pixels and have a Full size control.
-Both diagram fences use Mermaid syntax; `mermaid` works offline, while `pele` uses Pele loaded client-side from a pinned CDN release.
+Diagrams use Mermaid syntax and are rendered by Pele, loaded client-side from a pinned CDN release.
 Write mathematics with readable Unicode or inline code; the initial renderer does not typeset LaTeX.
 
 ```markdown

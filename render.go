@@ -12,7 +12,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/yuin/goldmark/ast"
@@ -101,18 +100,16 @@ func (r *mediaRenderer) image(w util.BufWriter, source []byte, node ast.Node, en
 func (r *mediaRenderer) diagram(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		code := node.(*ast.FencedCodeBlock)
-		fmt.Fprintf(w, `<div class="diagram" data-renderer="%s"><pre>%s</pre></div>`, html.EscapeString(string(code.Language(source))), html.EscapeString(string(code.Lines().Value(source))))
+		fmt.Fprintf(w, `<div class="diagram"><pre>%s</pre></div>`, html.EscapeString(string(code.Lines().Value(source))))
 	}
 	return ast.WalkSkipChildren, nil
 }
-
-var scriptEnd = regexp.MustCompile(`(?i)</script`)
 
 func renderOutline(w io.Writer, outline *Outline, depth int, baseDir string) error {
 	md := markdown()
 	md.Renderer().AddOptions(renderer.WithNodeRenderers(util.Prioritized(&linkRenderer{outline.ByID}, 100), util.Prioritized(&mediaRenderer{baseDir}, 100)))
 	var tree strings.Builder
-	hasMermaid, hasPele := false, false
+	hasDiagrams := false
 	var renderPoints func([]*Point, int) error
 	renderPoints = func(points []*Point, level int) error {
 		tree.WriteString(`<ul class="points">`)
@@ -147,8 +144,7 @@ func renderOutline(w io.Writer, outline *Outline, depth int, baseDir string) err
 							return fmt.Errorf("line %d [%s]: %w", p.Line, p.Number, err)
 						}
 						tree.WriteString(rendered.String())
-						hasMermaid = hasMermaid || visual.Kind == "mermaid"
-						hasPele = hasPele || visual.Kind == "pele"
+						hasDiagrams = hasDiagrams || visual.Kind == "mermaid"
 					}
 					tree.WriteString(`</div>`)
 				}
@@ -175,24 +171,15 @@ func renderOutline(w io.Writer, outline *Outline, depth int, baseDir string) err
 	}
 	css, _ := assets.ReadFile("web/style.css")
 	js, _ := assets.ReadFile("web/reader.js")
-	var mermaid string
-	if hasMermaid {
-		bundle, err := assets.ReadFile("web/mermaid.min.js")
-		if err != nil {
-			return err
-		}
-		mermaid = scriptEnd.ReplaceAllString(string(bundle), `<\/script`)
-	}
 	t, err := template.New("page").Parse(string(page))
 	if err != nil {
 		return err
 	}
 	return t.Execute(w, struct {
-		Title   string
-		Tree    template.HTML
-		CSS     template.CSS
-		JS      template.JS
-		Mermaid template.JS
-		Pele    bool
-	}{outline.Title, template.HTML(tree.String()), template.CSS(css), template.JS(js), template.JS(mermaid), hasPele})
+		Title    string
+		Tree     template.HTML
+		CSS      template.CSS
+		JS       template.JS
+		Diagrams bool
+	}{outline.Title, template.HTML(tree.String()), template.CSS(css), template.JS(js), hasDiagrams})
 }

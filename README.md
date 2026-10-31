@@ -29,7 +29,7 @@ Open `notes.html` in a browser. `--depth 2` initially shows two levels; `--depth
 
 Use one logical statement per point, optional bold titles, and `**Definitions**` for a definitions branch. Preserve stable `{#ids}` across edits; displayed numbers identify positions in the current version.
 
-Indent tables, image paragraphs, or fenced `mermaid` / `pele` blocks under a point after a blank line. Local images are embedded and initially limited to 200px tall. Mermaid is bundled for offline use; Pele loads from a pinned CDN release when opened.
+Indent tables, image paragraphs, or fenced `mermaid` blocks under a point after a blank line. Local images are embedded and initially limited to 200px tall. Diagrams use Mermaid syntax, rendered by [Pele](https://pele.run/) from a pinned CDN release when opened.
 
 ## Develop
 
@@ -42,6 +42,6 @@ bash scripts/build-site.sh
 
 The Pages workflow builds `dist/` and publishes it on pushes to `main`.
 
-Optional browser checks: `npm ci`, `npx playwright install chromium`, then `npm run test:browser`. Set `POINTFOLD_CHROME` to use an installed Chrome. Rebuild vendored Mermaid with `npm run build:mermaid`.
+Optional browser checks: `npm ci`, `npx playwright install chromium`, then `npm run test:browser`. Set `POINTFOLD_CHROME` to use an installed Chrome.
 
 MIT licensed; dependency licenses are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

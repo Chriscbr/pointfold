@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-const version = "0.3.0"
+const version = "0.4.0"
 
 const usage = `Pointfold — read ideas a point at a time.
 
@@ -18,7 +18,7 @@ const usage = `Pointfold — read ideas a point at a time.
   pointfold check INPUT.md
   pointfold refs INPUT.md
 
-render creates a self-contained HTML file (default: beside INPUT.md).
+render creates a local HTML file (default: beside INPUT.md).
 --depth 1 shows only root points; 2 shows one child level; 0 opens all.
 Use INPUT - for stdin; rendering stdin requires -o (or -o - for stdout).
 refs maps current outline numbers to source lines and stable IDs.

@@ -56,7 +56,7 @@ func TestInvalidInput(t *testing.T) {
 		{"relative URL", "# Title\n- [bad](../thing.md)\n", "unsupported link"},
 		{"autolink", "# Title\n- <https://example.com>\n", "autolinks"},
 		{"reference definition", "# Title\n- See [source][s].\n\n[s]: https://example.com\n", "reference-definition"},
-		{"fence", "# Title\n- Point.\n\n  ```go\n  x := 1\n  ```\n", "mermaid or pele"},
+		{"fence", "# Title\n- Point.\n\n  ```go\n  x := 1\n  ```\n", "only mermaid"},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
@@ -78,7 +78,7 @@ func TestWrappedTextAndSourceLines(t *testing.T) {
 	}
 }
 
-func TestRenderedContentIsEscapedAndOffline(t *testing.T) {
+func TestRenderedContentEscapesMarkup(t *testing.T) {
 	out, err := parseOutline([]byte("# A & B\n- **Bold**, *emphasis*, `</script><img src=x>` and [source](https://example.com/?a=1&amp;b=2 \"Source title\").\n"))
 	if err != nil {
 		t.Fatal(err)

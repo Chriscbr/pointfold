@@ -226,8 +226,8 @@ func parseVisual(node ast.Node, source []byte) (Visual, error) {
 		return Visual{"table", strings.Join(lines, "\n")}, nil
 	case *ast.FencedCodeBlock:
 		language := string(v.Language(source))
-		if language != "mermaid" && language != "pele" {
-			return Visual{}, at(source, node, "only mermaid or pele code blocks are supported as visual blocks")
+		if language != "mermaid" {
+			return Visual{}, at(source, node, "only mermaid code blocks are supported as visual blocks")
 		}
 		code := string(v.Lines().Value(source))
 		fence := "```"
@@ -239,7 +239,7 @@ func parseVisual(node ast.Node, source []byte) (Visual, error) {
 		if onlyImage(node) != nil {
 			return Visual{"image", strings.TrimSpace(blockMarkdown(node, source))}, nil
 		}
-		return Visual{}, at(source, node, "a point has one text block; use child points for more prose, or attach a table, image, mermaid, or pele block")
+		return Visual{}, at(source, node, "a point has one text block; use child points for more prose, or attach a table, image, or mermaid block")
 	}
 }
 

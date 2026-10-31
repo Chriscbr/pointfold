@@ -1,4 +1,4 @@
-# Pointfold Markdown profile, version 0.3
+# Pointfold Markdown profile, version 0.4
 
 ## Model and meaning
 
@@ -38,7 +38,7 @@ A grouping branch may simply be named `**Definitions**`.
 
 ## Visual blocks
 
-Attach a GFM-style pipe table, a standalone Markdown image, or a fenced `mermaid` or `pele` block to the point by indenting it under the bullet after a blank line:
+Attach a GFM-style pipe table, a standalone Markdown image, or a fenced `mermaid` block to the point by indenting it under the bullet after a blank line:
 
 ````markdown
 - **Comparison.** The policies differ in delay. {#comparison}
@@ -77,10 +77,8 @@ For a web image, save it locally and use that path.
 Images start at a maximum height of 200 pixels and fit within the available width.
 Full size removes those limits, with horizontal scrolling inside the image frame when necessary; Small size restores them.
 
-Mermaid is bundled inline only for documents containing Mermaid blocks and renders a diagram when its branch first opens.
-Mermaid diagrams need no network connection or JavaScript package installation.
-A `pele` fence uses the same Mermaid syntax with [Pele](https://pele.run/api) as the renderer.
-Pele 1.13.0 loads from jsDelivr on first expansion, with a pinned version and integrity hash; it needs a network connection for that load.
+Diagrams use standard Mermaid syntax in `mermaid` fences, rendered by [Pele](https://pele.run/api) when their branches first open.
+Pele 1.13.0 loads from jsDelivr with a pinned version and integrity hash; the CDN load needs an internet connection.
 Without JavaScript, tables and images still appear when expanded, and diagram blocks show their source text.
 `check` validates placement and references, while diagram syntax errors appear when the point is opened.
 
