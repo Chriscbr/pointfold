@@ -9,19 +9,21 @@
   <script>{{.Theme}}</script>
 </head>
 <body>
-  <div class="page-actions" role="group" aria-label="Page actions">
-    <button type="button" id="copy-all" title="Copy complete Markdown">Copy everything</button>
-    <button type="button" id="download-all" title="Download complete Markdown file">Download markdown</button>
-    <button type="button" id="download-page">Download page</button>
-    <button type="button" id="print-page">Print</button>
-    <button type="button" id="theme-toggle">Dark mode</button>
-  </div>
   <h1>{{.Title}}</h1>
-  <p class="controls">
-    <button type="button" id="expand-all">Expand all</button>
-    <button type="button" id="collapse-all">Collapse all</button>
-    <button type="button" id="return-point" hidden>Back to previous point</button>
-  </p>
+  <div class="controls">
+    <div class="outline-actions">
+      <button type="button" id="expand-all">Expand all</button>
+      <button type="button" id="collapse-all">Collapse all</button>
+      <button type="button" id="return-point" hidden>Back to previous point</button>
+    </div>
+    <div class="page-actions" role="group" aria-label="Page actions">
+      <button type="button" id="copy-all" title="Copy complete Markdown">Copy everything</button>
+      <button type="button" id="download-all" title="Download complete Markdown file">Download markdown</button>
+      <button type="button" id="download-page">Download page</button>
+      <button type="button" id="print-page">Print</button>
+      <button type="button" id="theme-toggle">Dark mode</button>
+    </div>
+  </div>
   <main id="outline" aria-label="Expandable outline">{{.Tree}}</main>
   <span id="status" class="sr-only" role="status" aria-live="polite"></span>
   <dialog id="copy-dialog" aria-labelledby="copy-title">
