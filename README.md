@@ -4,6 +4,8 @@ Turn nested Markdown bullets into a compact, expandable HTML outline. Points hav
 
 [Website and examples](https://rybicki.io/pointfold/) · [Format](FORMAT.md) · [Agent skill](skill/pointfold/SKILL.md)
 
+The agent skill produces a rendered HTML reader by default, alongside its editable Markdown source.
+
 ## Install
 
 Requires Go 1.22 or newer.

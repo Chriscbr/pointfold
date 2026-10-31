@@ -1,11 +1,44 @@
 ---
 name: pointfold
-description: Write or revise a progressively expandable Markdown outline for research, decisions, discussions, mathematical explanations, algorithms, or codebase notes when the reader wants addressable points and several levels of detail.
+description: Create or revise expandable HTML explanations using the Pointfold CLI, with hierarchical Markdown source and addressable points, for research, decisions, discussions, mathematical explanations, algorithms, or codebase notes.
 ---
 
-# Pointfold writing
+# Pointfold explanations
 
 Produce a tree of points that remains useful at different reading depths, using the syntax below.
+
+## Default deliverable: rendered HTML
+
+Using this skill means producing an HTML reader through the Pointfold CLI by default, together with its editable Markdown source.
+The user does not need to ask separately for rendering.
+An inline bulleted answer alone does not complete the skill's workflow.
+Honor an explicit request for Markdown-only, inline text, or another delivery format instead.
+
+Save the outline in the task's designated output directory, then run:
+
+```sh
+pointfold check outputs/explanation.md
+pointfold render outputs/explanation.md -o outputs/explanation.html
+```
+
+Adapt the example paths to the environment's output directory and requested filename.
+Fix validation or rendering errors, and confirm that the HTML file was created successfully.
+When a preview is available, check that the reader opens with collapsed branches and that a branch expands.
+Deliver a link or attachment to the HTML first, with a Markdown source link when useful, and keep the chat reply brief rather than repeating the full outline.
+
+If `pointfold` is missing from PATH, look for an existing binary in a Pointfold checkout or the Go binary directory.
+If none is available and Go is installed, install the CLI into the task's scratch directory and invoke that binary directly:
+
+```sh
+mkdir -p work/pointfold-bin
+GOBIN="$PWD/work/pointfold-bin" go install github.com/Chriscbr/pointfold@latest
+work/pointfold-bin/pointfold check outputs/explanation.md
+work/pointfold-bin/pointfold render outputs/explanation.md -o outputs/explanation.html
+```
+
+Use the environment's scratch directory when it differs from `work/`.
+A missing PATH entry alone is not a reason to skip HTML rendering.
+If execution, installation, or required environment permissions prevent rendering, explain the concrete blocker and label HTML generation incomplete; provide Markdown as a fallback without claiming it was rendered.
 
 ## The unit of writing
 
@@ -99,10 +132,8 @@ If available, `pointfold refs document.md` maps current numbers to source lines 
 Resolve version ambiguity before silently applying an old positional reference to a different point.
 Add explanations under the relevant point and use cross-references when a fact belongs primarily elsewhere.
 
-If the CLI is available, run `pointfold check document.md` and fix structural or reference errors.
-Render with `pointfold render document.md -o document.html` when the user requests a reader artifact.
+When revising an explanation, update its Markdown and rerender the HTML through the same default delivery workflow.
 Keep HTML readers compact and minimally styled, using browser defaults and collapsed branches initially.
 Show authored content and necessary navigation or copy controls, preserve inline Markdown formatting, and omit branding, instructions, counts, and footers.
 The right-hand Markdown copy control copies that point's own text and visual source blocks, excluding child bullets, its bullet marker, and its source-only stable-ID suffix.
 The CLI validates syntax and references, not sentence size, factual correctness, or quality of the hierarchy.
-Without the CLI, deliver valid Markdown and check uniqueness, reference targets, and collapse-level readability manually.
